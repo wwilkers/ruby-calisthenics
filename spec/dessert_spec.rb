@@ -1,5 +1,6 @@
 require 'dessert'
-require 'debugger'
+require 'byebug'
+RSpec.configure { |config| config.expect_with(:rspec) { |c| c.syntax = :should }}
 
 describe Dessert, :pending => true do
   describe 'cake' do
