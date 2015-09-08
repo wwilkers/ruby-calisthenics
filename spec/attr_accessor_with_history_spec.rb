@@ -1,5 +1,6 @@
 require 'attr_accessor_with_history'
-require 'debugger'
+require 'byebug'
+RSpec.configure { |config| config.expect_with(:rspec) { |c| c.syntax = :should }}
 
 class TestClass1
   attr_accessor_with_history :foo
