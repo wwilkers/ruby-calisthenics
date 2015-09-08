@@ -1,5 +1,6 @@
 require 'rock_paper_scissors'
-require 'debugger'
+require 'byebug'
+RSpec.configure { |config| config.expect_with(:rspec) { |c| c.syntax = :should }}
 
 describe RockPaperScissors, :pending => true do
   before(:each) do
