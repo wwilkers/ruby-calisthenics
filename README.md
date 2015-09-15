@@ -1,6 +1,8 @@
 Ruby Calisthenics
 =================
 
+CSCI/CSIS 602 and CSCI 420 -- you can skip the Rock/Paper/Scissors exercise. Do the other three parts.
+
 The goal of this multi-part assignment is to get you accustomed to basic
 Ruby coding and introduce you to RSpec, the unit testing tool we will be
 using heavily.
@@ -131,7 +133,74 @@ the flavor plus "jelly bean", for example, "strawberry jelly bean".
 `licorice`, but true for all other flavors.  The behavior of
 `delicious?` for non-jelly-bean desserts should be unchanged.
 
-# Part 3: Rock-Paper-Scissors
+
+## Part 3. Ruby metaprogramming
+
+Specs:  `spec/attr_accessor_with_history_spec.rb`
+
+Skeleton: `lib/attr_accessor_with_history.rb`
+
+In lecture we saw how  `attr_accessor` uses metaprogramming to create
+getters and setters for object attributes on the fly.
+
+Define a method `attr_accessor_with_history` that provides the same
+functionality as attr accessor but also tracks every value the attribute
+has ever had: 
+
+    class Foo 
+      attr_accessor_with_history :bar
+    end
+    f = Foo.new        # => #<Foo:0x127e678>
+    f.bar = 3          # => 3
+    f.bar = :wowzo     # => :wowzo
+    f.bar = 'boo!'     # => 'boo!'
+    f.bar_history      # => [nil, 3, :wowzo]
+
+(Calling `bar_history` before `bar`'s setter is ever called should
+return `nil`.)
+
+History of instance variables should be maintained separately for each
+object instance. that is:
+
+    f = Foo.new
+    f.bar = 1 ; f.bar = 2
+    g = Foo.new
+    g.bar = 3 ; g.bar = 4
+    g.bar_history
+
+then the last line should just return `[nil,3]`, rather than
+`[nil,1,2,3]`.
+
+If you're interested in how the template works,
+the first thing to notice is that if we define
+`attr_accessor_with_history` in class `Class`, we can use it as in the
+snippet 
+above. This is because a Ruby class like `Foo` or `String` is actually just an
+object of class `Class`. (If that makes your brain hurt, just don't worry
+about it for now. It'll come.) 
+
+The second thing to notice is that Ruby
+provides a method `class_eval` that takes a string and evaluates it in the
+context of the current class, that is, the class from which you're
+calling `attr_accessor_with_history`. This string will need to contain a
+method definition that implements a setter-with-history for the desired
+attribute `attr_name`. 
+
+HINTS:
+
+* Don't forget that the very first time the attribute receives a value,
+its history array will have to be initialized.  
+* An
+attribute's initial value is always `nil` by default, so if
+`foo_history` is referenced before `foo` has ever been assigned, the
+correct answer is `nil`, but after the first assignment to `foo`, the
+correct value for `foo_history` would be `[nil]`.
+* Don't forget that instance variables are referred to as `@bar` within getters and setters, as Section 3.4 of ELLS explains.
+* Although the existing `attr_accessor` can handle multiple arguments (e.g. `attr_accessor :foo, :bar`), your version just needs to handle a single argument.
+* Your implementation should be genreal enough to work in the context of any class and for attributes of any (legal) variable name
+
+
+# Part 4: Rock-Paper-Scissors (OPTIONAL FOR CSCI/CSIS 602 and CSCI 420)
 
 Specs: `spec/rock_paper_scissors_spec.rb`
 
@@ -198,67 +267,4 @@ match per round).
 HINT: Formulate the problem as a recursive one whose base case you
 solved in part 1.
 
-## Part 4. Ruby metaprogramming
 
-Specs:  `spec/attr_accessor_with_history_spec.rb`
-
-Skeleton: `lib/attr_accessor_with_history.rb`
-
-In lecture we saw how  `attr_accessor` uses metaprogramming to create
-getters and setters for object attributes on the fly.
-
-Define a method `attr_accessor_with_history` that provides the same
-functionality as attr accessor but also tracks every value the attribute
-has ever had: 
-
-    class Foo 
-      attr_accessor_with_history :bar
-    end
-    f = Foo.new        # => #<Foo:0x127e678>
-    f.bar = 3          # => 3
-    f.bar = :wowzo     # => :wowzo
-    f.bar = 'boo!'     # => 'boo!'
-    f.bar_history      # => [nil, 3, :wowzo]
-
-(Calling `bar_history` before `bar`'s setter is ever called should
-return `nil`.)
-
-History of instance variables should be maintained separately for each
-object instance. that is:
-
-    f = Foo.new
-    f.bar = 1 ; f.bar = 2
-    g = Foo.new
-    g.bar = 3 ; g.bar = 4
-    g.bar_history
-
-then the last line should just return `[nil,3]`, rather than
-`[nil,1,2,3]`.
-
-If you're interested in how the template works,
-the first thing to notice is that if we define
-`attr_accessor_with_history` in class `Class`, we can use it as in the
-snippet 
-above. This is because a Ruby class like `Foo` or `String` is actually just an
-object of class `Class`. (If that makes your brain hurt, just don't worry
-about it for now. It'll come.) 
-
-The second thing to notice is that Ruby
-provides a method `class_eval` that takes a string and evaluates it in the
-context of the current class, that is, the class from which you're
-calling `attr_accessor_with_history`. This string will need to contain a
-method definition that implements a setter-with-history for the desired
-attribute `attr_name`. 
-
-HINTS:
-
-* Don't forget that the very first time the attribute receives a value,
-its history array will have to be initialized.  
-* An
-attribute's initial value is always `nil` by default, so if
-`foo_history` is referenced before `foo` has ever been assigned, the
-correct answer is `nil`, but after the first assignment to `foo`, the
-correct value for `foo_history` would be `[nil]`.
-* Don't forget that instance variables are referred to as `@bar` within getters and setters, as Section 3.4 of ELLS explains.
-* Although the existing `attr_accessor` can handle multiple arguments (e.g. `attr_accessor :foo, :bar`), your version just needs to handle a single argument.
-* Your implementation should be genreal enough to work in the context of any class and for attributes of any (legal) variable name
