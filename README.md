@@ -108,6 +108,8 @@ Case doesn't matter in classifying string as anagrams
 (but case should be preserved in the output),
 and the order of the anagrams in the groups doesn't matter. 
 
+Hint: see the rspec tests for an example and check out string class methods such as split, join, chars, sort, etc.
+
 # Part 2: Basic Object-Oriented Programming for Dessert
 
 Specs: `spec/dessert_spec.rb`
