@@ -8,8 +8,8 @@ module FunWithStrings
    self.downcase.gsub(/[[:punct:]]/, '').split.each_with_object(Hash.new(0)) { |word, num| num[word] += 1 }
   end
   def anagram_groups
-    #split the word with words hashed it an array
-    Array( self.split.each_with_object(Hash.new{|hash, key| hash[key] = [] }) { |word, num| num[word.downcase.chars.sort] << word }.values )
+    #split the word with words hashed it an array worked with Castelli on this one it was hard
+    Array( self.split.each_with_object(Hash.new{ |hash, key| hash[key] = [] }) { |word, num| num[word.downcase.chars.sort] << word }.values )
   end
 end
 
